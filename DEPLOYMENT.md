@@ -62,7 +62,7 @@ The API is an Express.js + Socket.IO service that requires always-on availabilit
 1. Go to [railway.app](https://railway.app)
 2. Click **New Project** → **Deploy from GitHub repo**
 3. Select your DineSync repository
-4. Railway auto-detects the monorepo; no special configuration needed
+4. Railway will automatically detect the `Dockerfile` and use it to build
 5. In the Railway dashboard, go to **Variables** and add:
 
 ```bash
@@ -78,19 +78,14 @@ DEVICE_OFFLINE_THRESHOLD_SECONDS=60
 CLIENT_URLS=https://<admin-domain>,https://<student-domain>
 ```
 
-### Build & Start Commands
+### Build & Start Configuration
 
-Set these in Railway's settings:
+Railway will automatically use the `Dockerfile` in the repository root:
+- **Builds** the monorepo packages (types, db, api)
+- **Installs pnpm** globally to handle the workspace structure
+- **Starts** the API service on port 4000
 
-**Build Command:**
-```bash
-pnpm --filter @dinesync/api build
-```
-
-**Start Command:**
-```bash
-pnpm --filter @dinesync/api start
-```
+No additional build command configuration needed in Railway.
 
 ### Important Notes for API
 
