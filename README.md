@@ -23,7 +23,7 @@ Since the logic has been simplified, you must reset the Supabase database before
    ```bash
    pnpm dev
    ```
-2. Open your browser and go to the Admin Panel: [http://localhost:3000](http://localhost:3000)
+2. Open your browser and go to the Admin Panel: [http://localhost:3002](http://localhost:3002)
 3. Log in using the admin credentials:
    - **Email**: `admin@dinesync.local`
    - **Password**: `password123`
