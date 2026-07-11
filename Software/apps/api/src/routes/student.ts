@@ -90,8 +90,8 @@ router.get('/search', async (req: Request, res: Response): Promise<void> => {
     // Filter out students who already have their meal turned on
     const availableStudents = (students || [])
       .filter(s => {
-        const ms = Array.isArray(s.mealStatus) && s.mealStatus.length > 0 ? s.mealStatus[0] : s.mealStatus;
-        return !ms || !ms.isAllowed;
+        const mealStatus = Array.isArray(s.mealStatus) ? s.mealStatus[0] : s.mealStatus;
+        return !mealStatus || !mealStatus.isAllowed;
       })
       .slice(0, 5)
       .map(s => ({ id: s.id, studentId: s.studentId, name: s.name }));

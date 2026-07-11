@@ -163,7 +163,10 @@ router.post('/consume', validate(ConsumeRequestSchema), async (req: Request, res
       .eq('studentId', card.studentId);
 
     // 3. Create log
-    const studentName = card.student && !Array.isArray(card.student) ? card.student.name : 'Unknown';
+    const studentRelation = card.student as { name?: string } | { name?: string }[] | null | undefined;
+    const studentName = Array.isArray(studentRelation)
+      ? studentRelation[0]?.name || 'Unknown'
+      : studentRelation?.name || 'Unknown';
     const logId = crypto.randomUUID();
     const { data: log } = await supabase.from('Log').insert({
       id: logId,

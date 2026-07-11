@@ -3,6 +3,10 @@
 DineSync is a robust, real-time IoT and web solution for managing university dining hall meals. 
 The system features an ESP32-based RFID kiosk paired with a Next.js Admin Dashboard and a Supabase backend.
 
+## Live Deployment
+
+If you want to put the project online, follow [DEPLOYMENT.md](DEPLOYMENT.md). It has the exact Supabase, API, frontend, and ESP32 steps.
+
 ## 🚀 How to Showcase This Project
 
 Follow these steps to demonstrate the full end-to-end functionality of DineSync to your professor or audience.
