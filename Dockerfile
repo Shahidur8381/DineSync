@@ -1,6 +1,6 @@
 # Multi-stage Dockerfile for DineSync API
 # Stage 1: Build
-FROM node:20-alpine AS builder
+FROM node:22-alpine AS builder
 
 # Install pnpm globally
 RUN npm install -g pnpm@latest
@@ -17,7 +17,7 @@ RUN pnpm install --frozen-lockfile
 RUN pnpm build
 
 # Stage 2: Runtime
-FROM node:20-alpine
+FROM node:22-alpine
 
 # Install pnpm globally in runtime image too
 RUN npm install -g pnpm@latest
