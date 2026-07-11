@@ -46,11 +46,11 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
       { expiresIn: process.env.JWT_EXPIRES_IN || '7d' } as jwt.SignOptions
     );
 
-    res.cookie('token', token, {
+    res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000,
+      secure: true,
+      sameSite: "none",
+      path: "/",
     });
 
     res.json({ id: user.id, name: user.name, email: user.email, role: user.role });
