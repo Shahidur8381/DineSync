@@ -16,6 +16,7 @@ interface StudentMe {
 export default function DashboardPage() {
   const [student, setStudent] = useState<StudentMe | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<{ id: string, studentId: string, name: string }[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<{ id: string, studentId: string, name: string } | null>(null);
@@ -56,11 +57,13 @@ export default function DashboardPage() {
 
   async function load() {
     setLoading(true);
+    setError(null);
     try {
       const me = await api.get<StudentMe>('/api/student/me');
       setStudent(me);
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
+      setError(e.message || 'Failed to load profile');
     } finally {
       setLoading(false);
     }
@@ -80,7 +83,30 @@ export default function DashboardPage() {
     );
   }
 
-  if (!student) return null;
+  if (!student || error) {
+    return (
+      <StudentLayout>
+        <div style={{ textAlign: 'center', padding: '60px 20px' }} className="animate-in">
+          <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>Session Error</h2>
+          <p style={{ color: 'var(--text-muted)', marginBottom: 24, fontSize: 14 }}>
+            {error || 'We couldn\'t load your profile. Your session might be invalid or expired.'}
+          </p>
+          <button 
+            className="btn btn-primary"
+            onClick={async () => {
+              try {
+                await api.post('/api/auth/logout');
+              } catch (e) {}
+              document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+              window.location.href = '/login';
+            }}
+          >
+            Clear Data & Login
+          </button>
+        </div>
+      </StudentLayout>
+    );
+  }
 
   return (
     <StudentLayout>
