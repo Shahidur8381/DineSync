@@ -11,9 +11,9 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
     },
   });
 
-  if (res.status === 401) {
+  if (res.status === 401 || res.status === 403) {
     if (typeof window !== 'undefined') window.location.href = '/login';
-    throw new Error('Unauthorized');
+    throw new Error(res.status === 403 ? 'Forbidden' : 'Unauthorized');
   }
 
   if (!res.ok) {
