@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { api } from '@/lib/api';
 
 const navItems = [
   { label: 'Home', href: '/', icon: '🏠' },
@@ -17,7 +18,24 @@ export function StudentLayout({ children }: { children: React.ReactNode }) {
           <span style={{ fontSize: 20 }}>🍴</span>
           DineSync
         </div>
-        <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Student Portal</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Student Portal</span>
+          <button 
+            onClick={async () => {
+              try {
+                await api.post('/api/auth/logout');
+              } catch (e) {}
+              document.cookie = 'token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+              window.location.href = '/login';
+            }}
+            style={{ 
+              background: 'rgba(244,63,94,0.1)', border: 'none', color: 'var(--red)', fontSize: 12, 
+              cursor: 'pointer', fontWeight: 600, padding: '4px 10px', borderRadius: 12
+            }}
+          >
+            Logout
+          </button>
+        </div>
       </header>
 
       <div className="s-content has-bottom-nav">

@@ -269,8 +269,8 @@ export default function DashboardPage() {
             
             <button 
               type="submit"
-              className="btn btn-secondary btn-full"
-              style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)' }}
+              className="btn btn-primary btn-full"
+              style={{ background: 'linear-gradient(135deg, #10b981, #059669)', border: 'none', color: '#fff', fontWeight: 700 }}
               disabled={changingPassword}
             >
               {changingPassword ? 'Updating...' : 'Update Password'}
