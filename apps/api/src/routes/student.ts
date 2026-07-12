@@ -1,4 +1,5 @@
 import { Router, Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
 import { supabase } from '@dinesync/db';
 import { requireAuth, getUser } from '../middleware/auth';
 
@@ -159,6 +160,58 @@ router.post('/transfer', async (req: Request, res: Response): Promise<void> => {
       await supabase
         .from('MealStatus')
         .insert({ studentId: targetStudentId, isAllowed: true, isConsumed: false });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// POST /api/student/change-password
+router.post('/change-password', async (req: Request, res: Response): Promise<void> => {
+  const { sub } = getUser(req);
+  const { currentPassword, newPassword } = req.body;
+
+  if (!currentPassword || !newPassword) {
+    res.status(400).json({ error: 'Current and new passwords are required' });
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    res.status(400).json({ error: 'New password must be at least 6 characters' });
+    return;
+  }
+
+  try {
+    const { data: student, error: fetchError } = await supabase
+      .from('Student')
+      .select('passwordHash')
+      .eq('id', sub)
+      .single();
+
+    if (fetchError || !student) {
+      res.status(404).json({ error: 'Student not found' });
+      return;
+    }
+
+    const isValid = await bcrypt.compare(currentPassword, student.passwordHash);
+    if (!isValid) {
+      res.status(401).json({ error: 'Incorrect current password' });
+      return;
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 12);
+
+    const { error: updateError } = await supabase
+      .from('Student')
+      .update({ passwordHash: newPasswordHash })
+      .eq('id', sub);
+
+    if (updateError) {
+      res.status(500).json({ error: 'Failed to update password' });
+      return;
     }
 
     res.json({ success: true });

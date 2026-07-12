@@ -22,6 +22,13 @@ export default function DashboardPage() {
   const [selectedStudent, setSelectedStudent] = useState<{ id: string, studentId: string, name: string } | null>(null);
   const [transferring, setTransferring] = useState(false);
 
+  // change password state
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [changingPassword, setChangingPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
+  const [passwordSuccess, setPasswordSuccess] = useState('');
+
   // effect for searching
   useEffect(() => {
     if (searchQuery.length < 2) {
@@ -52,6 +59,29 @@ export default function DashboardPage() {
       alert(e.message || 'Failed to transfer meal');
     } finally {
       setTransferring(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordError('');
+    setPasswordSuccess('');
+    
+    if (newPassword.length < 6) {
+      setPasswordError('New password must be at least 6 characters');
+      return;
+    }
+
+    setChangingPassword(true);
+    try {
+      await api.post('/api/student/change-password', { currentPassword, newPassword });
+      setPasswordSuccess('Password changed successfully');
+      setCurrentPassword('');
+      setNewPassword('');
+    } catch (err: any) {
+      setPasswordError(err.message || 'Failed to change password');
+    } finally {
+      setChangingPassword(false);
     }
   };
 
@@ -203,6 +233,50 @@ export default function DashboardPage() {
             </button>
           </div>
         )}
+
+        {/* Change Password */}
+        <div className="glass-card" style={{ marginTop: 24, padding: '24px 20px', marginBottom: 24 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 12 }}>Change Password</h3>
+          
+          <form onSubmit={handleChangePassword}>
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label className="form-label" style={{ fontSize: 13 }}>Current Password</label>
+              <input 
+                type="password" 
+                className="form-input" 
+                placeholder="••••••••" 
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+              />
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: 16 }}>
+              <label className="form-label" style={{ fontSize: 13 }}>New Password</label>
+              <input 
+                type="password" 
+                className="form-input" 
+                placeholder="••••••••" 
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                minLength={6}
+              />
+            </div>
+            
+            {passwordError && <div style={{ color: 'var(--red)', fontSize: 13, marginBottom: 12 }}>{passwordError}</div>}
+            {passwordSuccess && <div style={{ color: 'var(--teal)', fontSize: 13, marginBottom: 12 }}>{passwordSuccess}</div>}
+            
+            <button 
+              type="submit"
+              className="btn btn-secondary btn-full"
+              style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border)' }}
+              disabled={changingPassword}
+            >
+              {changingPassword ? 'Updating...' : 'Update Password'}
+            </button>
+          </form>
+        </div>
       </div>
     </StudentLayout>
   );

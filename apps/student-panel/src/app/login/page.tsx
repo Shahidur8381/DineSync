@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 export default function LoginPage() {
   const router = useRouter();
   const [studentId, setStudentId] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +20,7 @@ export default function LoginPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         credentials: 'include',
-        body: JSON.stringify({ studentId, role: 'student' }),
+        body: JSON.stringify({ studentId, password, role: 'student' }),
       });
 
       if (!res.ok) {
@@ -65,7 +66,7 @@ export default function LoginPage() {
         <div className="glass-card" style={{ padding: '28px 24px' }}>
           <form onSubmit={handleSubmit}>
             <div className="form-group" style={{ marginBottom: 24 }}>
-              <label className="form-label" htmlFor="login-studentid">Student ID</label>
+              <label className="form-label" htmlFor="login-studentid">Student ID (Roll)</label>
               <input
                 id="login-studentid"
                 type="text"
@@ -75,6 +76,20 @@ export default function LoginPage() {
                 onChange={e => setStudentId(e.target.value)}
                 required
                 autoComplete="username"
+              />
+            </div>
+            
+            <div className="form-group" style={{ marginBottom: 24 }}>
+              <label className="form-label" htmlFor="login-password">Password</label>
+              <input
+                id="login-password"
+                type="password"
+                className="form-input"
+                placeholder="••••••••"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
+                required
+                autoComplete="current-password"
               />
             </div>
 
@@ -91,7 +106,11 @@ export default function LoginPage() {
           </form>
 
           <div style={{ marginTop: 20, padding: '12px 14px', background: 'rgba(99,102,241,0.08)', borderRadius: 10, fontSize: 12, color: 'var(--text-muted)' }}>
-            <strong style={{ color: 'var(--indigo-light)' }}>Try logging in with:</strong> 2207103 (Shawon) or 103 (Shahidur)
+            <strong style={{ color: 'var(--indigo-light)' }}>Dev helper:</strong> Try logging in with ID 2207103 (Shawon) or 103 (Shahidur). 
+            <br />
+            <span style={{ display: 'inline-block', marginTop: 4 }}>
+              * Default password is the same as the roll/Student ID.
+            </span>
           </div>
         </div>
       </div>
