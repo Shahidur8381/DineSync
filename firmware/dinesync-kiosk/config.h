@@ -17,7 +17,7 @@
 
 // ─── API ──────────────────────────────────────────────────────────────────────
 // Use the machine running the Express API. Find with `ipconfig` / `ifconfig`.
-#define API_BASE_URL   "http://192.168.0.200:4000"
+#define API_BASE_URL   "https://dinesyncapi-production.up.railway.app"
 #define DEVICE_ID      "kiosk-hall-a-01"
 #define DEVICE_API_KEY "dinesync-dev-key-01"   // raw key — sent in X-Device-Key header
 
