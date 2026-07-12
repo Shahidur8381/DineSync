@@ -10,7 +10,13 @@ export interface JwtPayload {
 
 export function requireAuth(role?: 'student' | 'admin') {
   return (req: Request, res: Response, next: NextFunction): void => {
-    const token = req.cookies?.token as string | undefined;
+    let token = req.cookies?.token as string | undefined;
+    if (role === 'admin' && req.cookies?.admin_token) {
+      token = req.cookies.admin_token;
+    } else if (!role && req.cookies?.admin_token) {
+      // If no specific role requested but admin_token exists, try it
+      token = req.cookies.admin_token;
+    }
 
     if (!token) {
       res.status(401).json({ error: 'Unauthorized' });

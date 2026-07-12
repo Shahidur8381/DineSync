@@ -46,7 +46,8 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
 
     const isProduction = process.env.NODE_ENV === 'production';
     
-    res.cookie("token", token, {
+    const cookieName = user.role === 'admin' ? 'admin_token' : 'token';
+    res.cookie(cookieName, token, {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? "none" : "lax",
@@ -60,8 +61,11 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.post('/logout', requireAuth(), (_req: Request, res: Response) => {
-  res.clearCookie('token');
+router.post('/logout', requireAuth(), (req: Request, res: Response) => {
+  const user = (req as Request & { user: { role: string } }).user;
+  const cookieName = user.role === 'admin' ? 'admin_token' : 'token';
+  res.clearCookie(cookieName);
+  res.clearCookie('token'); // clear old generic token just in case
   res.json({ ok: true });
 });
 
